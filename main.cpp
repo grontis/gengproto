@@ -14,6 +14,12 @@ public:
 };
 
 int SDLHelloWorld() {
+
+}
+
+int main() {
+    bool isRunning = true;
+
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         std::cerr << "SDL_Init Error: " << SDL_GetError() << std::endl;
         return 1;
@@ -45,33 +51,37 @@ int SDLHelloWorld() {
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
     SDL_RenderFillRect(renderer, &rect);
-
     SDL_RenderPresent(renderer);
+
+    SDL_Event e;
+    while(isRunning) {
+        while ( SDL_PollEvent(&e) != 0) {
+            switch (e.type) {
+                case SDL_QUIT:
+                    return false;
+                case SDL_KEYDOWN:
+                        SDL_RenderClear(renderer);
+                        SDL_Rect rect;
+                        rect.x = 250;
+                        rect.y = 200;
+                        rect.w = 100;
+                        rect.h = 100;
+                        SDL_SetRenderDrawColor(renderer, 0, 255, 255, 255);
+                        SDL_RenderFillRect(renderer, &rect);
+                        SDL_RenderPresent(renderer);
+                default:
+                    break;
+            }
+        }
+
+        SDL_Delay(100);
+    }
+
     SDL_Delay(5000);
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
-    
+
     return 0;
-}
-
-int main() {
-    //TODO world space
-        //2D grid space first
-        //2D library that was used in tetris example engine
-        //Then 3D next
-
-
-    //TODO vector stuff
-        //Vector class
-        //Store vectors
-        //Modify/compute vectors
-        //Draw vectors
-
-
-    int result = SDLHelloWorld();
-    return result;
-
-    //return 0;
 }
