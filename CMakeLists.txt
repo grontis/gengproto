@@ -10,5 +10,5 @@ message(STATUS "SDL2_LIBRARIES: ${SDL2_LIBRARIES}")
 
 include_directories(${SDL2_INCLUDE_DIRS})
 
-add_executable(gengproto main.cpp)
+add_executable(gengproto src/main.cpp)
 target_link_libraries(gengproto ${SDL2_LIBRARIES})
