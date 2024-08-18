@@ -7,4 +7,11 @@ issues with cmake on windows solved by renaming cmake file https://stackoverflow
 ```sudo apt-get install libsdl2-dev```
 
 ## Windows
-download using vcpkg
+had some issues with vcpkg installing SDL2 with a windows x64 MSVC version, which was incompatible with building this project with GCC.
+
+Instead downloaded the SDL release zip
+https://github.com/libsdl-org/SDL/releases
+unzip
+then run from a MSYS2 terminal
+```./configure && make && make install ```
+(as seen in INSTALL.txt)

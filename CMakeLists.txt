@@ -5,9 +5,6 @@ set(CMAKE_CXX_STANDARD 14)
 
 find_package(SDL2 REQUIRED)
 
-message(STATUS "SDL2_INCLUDE_DIRS: ${SDL2_INCLUDE_DIRS}")
-message(STATUS "SDL2_LIBRARIES: ${SDL2_LIBRARIES}")
-
 include_directories(${SDL2_INCLUDE_DIRS})
 
 add_executable(gengproto src/main.cpp)
