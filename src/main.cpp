@@ -31,26 +31,31 @@ bool isWithinRange(const Coordinate& coord, const Coordinate& center, int width,
         coord.y >= center.y && coord.y <= center.y + height;
 }
 
+//TODO refactor into classes and separate engine/game concerns into layers
 int main(int argc, char *argv[]) {
+    int windowWidth = 800;
+    int windowHeight = 600;
+
+
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         std::cerr << "SDL_Init Error: " << SDL_GetError() << std::endl;
         return 1;
     }
 
-    SDL_Window *window = SDL_CreateWindow("gengproto", 100, 100, 1024, 860, SDL_WINDOW_SHOWN);
+    SDL_Window *window = SDL_CreateWindow("gengproto", 100, 100, windowWidth, windowHeight, SDL_WINDOW_SHOWN);
     if (window == nullptr) {
         std::cerr << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
         SDL_Quit();
         return 1;
     }
 
-    SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+    //SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (renderer == nullptr) {
         SDL_DestroyWindow(window);
         std::cerr << "SDL_CreaterRenderer Error: " << SDL_GetError() << std::endl;
-        SDL_Quit();
+        SDL_Quit(); 
         return 1;
     }
 
@@ -68,8 +73,8 @@ int main(int argc, char *argv[]) {
     std::random_device rd;
     std::default_random_engine engine(rd());
     std::uniform_int_distribution<int> rectSpawnDist(0, 3);
-    std::uniform_int_distribution<int> xDist(250, 2200); //TODO This should be dynamic to window resolution width
-    std::uniform_int_distribution<int> yDist(150, 1250); //TODO This should be dynamic to window resolution height
+    std::uniform_int_distribution<int> xDist(100, windowWidth - 100);
+    std::uniform_int_distribution<int> yDist(100, windowHeight - 100);
     int spawnWaitCount = 0;
     int spawnWaitLimit = 25;
 
@@ -81,7 +86,6 @@ int main(int argc, char *argv[]) {
 
 
     //TODO current pacman like ideas.
-        //as player eats squares, increases in size and speed, making it easier to finish
         //enemies come to attack player, harming and slowing down or decreasing in size
         //powerups like time warp, speeding up player but slowing down the world. or a gravity pull
         //power ups come from destroying enemies? 
@@ -94,11 +98,6 @@ int main(int argc, char *argv[]) {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
                 quit = true;
-            }
-            if (event.type == SDL_MOUSEBUTTONDOWN) {
-                if (event.button.button == SDL_BUTTON_LEFT) {
-
-                }
             }
         }
 
@@ -147,6 +146,9 @@ int main(int argc, char *argv[]) {
         for (auto it = xyRectMap.begin(); it != xyRectMap.end(); ) {
             if (isWithinRange(it->first, {mainRect.x, mainRect.y}, mainRect.w, mainRect.h)) {
                 it = xyRectMap.erase(it);
+                movementSpeed += 25;
+                mainRect.w += 5;
+                mainRect.h += 5;
             } else {
                 SDL_SetRenderDrawColor(renderer, 255, 0, 255, 255);
                 SDL_RenderFillRect(renderer, &it->second);
@@ -157,9 +159,7 @@ int main(int argc, char *argv[]) {
         SDL_RenderPresent(renderer);
         SDL_Delay(16);
 
-        // int x, y;
-        // SDL_GetMouseState(&x, &y);
-        // std::cout << "x: " << x << ", y: " << y << std::endl;
+        std::cout << "speed: " << movementSpeed << std::endl;
     }
 
     SDL_DestroyRenderer(renderer);
