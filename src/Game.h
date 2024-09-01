@@ -14,11 +14,9 @@ public:
 
 private:
     SDLManager sdlManager;
-    //TODO refactor the need for a renderer out of this class so we can encapsulate SDL code into one class interface
-    SDL_Renderer* renderer;
 
     std::unique_ptr<Entity> mainEntity;
-    std::unordered_map<Coordinate, Entity> entities;
+    std::unordered_map<Coordinate, Entity> entitiesMap;
 
     //TODO refactor RNG specific code to its own class
     std::random_device rd;
@@ -33,10 +31,6 @@ private:
 
     Uint32 lastTime;
     float deltaTime;
-
-    //TODO refactor window/SDL code to SDL manager
-    const int windowWidth = 800;
-    const int windowHeight = 600;
 
     bool quit = false;
 

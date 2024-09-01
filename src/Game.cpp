@@ -1,17 +1,12 @@
 #include "Game.h"
 
+//TODO refactor all SDL related code out of here other than the SDLManager. Encapsulate everything into that
 Game::Game()
     : engine(rd())
 {
-    //TODO refactor use of renderer out of this class so that it is encapsulated in SDLManager
-    renderer = sdlManager.getRenderer();
-    if (!renderer) {
-        throw std::runtime_error("Renderer initialization failed.");
-    }
-
     rectSpawnDist = std::uniform_int_distribution<int>(0, 3);
-    xDist = std::uniform_int_distribution<int>(100, windowWidth - 100);
-    yDist = std::uniform_int_distribution<int>(100, windowHeight - 100);
+    xDist = std::uniform_int_distribution<int>(100, sdlManager.getWindowWidth() - 100);
+    yDist = std::uniform_int_distribution<int>(100, sdlManager.getWindowHeight() - 100);
 
     mainEntity = std::make_unique<Entity>(100, 100, 100, 100, SDL_Color{0, 255, 0, 255});
 }
@@ -23,12 +18,11 @@ void Game::run() {
         handleEvents();
         update();
         render();
-        auto foo = SDL_GetError();
-        SDL_Delay(16);
+        sdlManager.delay(16);
     }
 }
 
-//TODO refactor SDL events here to SDL manager
+//TODO refactor SDL events here to SDL manager (or perhaps an event/input handler)
 void Game::handleEvents() {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
@@ -73,16 +67,20 @@ void Game::update() {
 }
 
 void Game::render() const {
-    SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
-    SDL_RenderClear(renderer);
+    //TODO refactor and implement color constants to support better readability
+        //ex: sdlManager.clearScreen(GColor_BLUE, 255);
+    sdlManager.clearScreen(0, 0, 255, 255);
 
-    mainEntity->render(renderer);
+    //TODO refactor drawRect to only need to pass in entity
+        //ex: sdlManager.drawEntity(mainEntity)
+        //then the rect/color data is encapsulated inside of draw method.
+    sdlManager.drawRect(mainEntity->rect, mainEntity->color.r, mainEntity->color.g, mainEntity->color.b, mainEntity->color.a);
 
-    for (const auto& pair : entities) {
-        pair.second.render(renderer);
+    for (const auto& pair : entitiesMap) {
+        sdlManager.drawRect(pair.second.rect, pair.second.color.r, pair.second.color.g, pair.second.color.b, pair.second.color.a);
     }
 
-    SDL_RenderPresent(renderer);
+    sdlManager.presentRenderer();
 }
 
 void Game::spawnEntities() {
@@ -93,14 +91,14 @@ void Game::spawnEntities() {
         Coordinate coord = {x, y};
 
         if (!isWithinRange(coord, Coordinate{mainEntity->rect.x, mainEntity->rect.y}, mainEntity->rect.w, mainEntity->rect.h)) {
-            entities.emplace(coord, Entity(x, y, 25, 25, SDL_Color{255, 0, 255, 255}));
+            entitiesMap.emplace(coord, Entity(x, y, 25, 25, SDL_Color{255, 0, 255, 255}));
         }
     }
 }
 
 void Game::handleEntityInteractions() {
     std::vector<Coordinate> toRemove;
-    for (auto& pair : entities) {
+    for (auto& pair : entitiesMap) {
         if (isWithinRange(pair.first, Coordinate{mainEntity->rect.x, mainEntity->rect.y}, mainEntity->rect.w, mainEntity->rect.h)) {
             toRemove.push_back(pair.first);
 
@@ -111,7 +109,7 @@ void Game::handleEntityInteractions() {
     }
 
     for (const auto& coord : toRemove) {
-        entities.erase(coord);
+        entitiesMap.erase(coord);
     }
 }
 

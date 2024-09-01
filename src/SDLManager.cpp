@@ -6,7 +6,7 @@ SDLManager::SDLManager() {
     }
 
     window = SDL_CreateWindow("gengproto", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                              800, 600, SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP);
+                              windowWidth, windowHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP);
     if (!window) {
         SDL_Quit();
         throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
@@ -26,6 +26,32 @@ SDLManager::~SDLManager() {
     SDL_Quit();
 }
 
-SDL_Renderer* SDLManager::getRenderer() const {
-    return renderer;
+void SDLManager::clearScreen(Uint8 r, Uint8 g, Uint8 b, Uint8 a) const {
+    SDL_SetRenderDrawColor(renderer, r, g, b, a);
+    SDL_RenderClear(renderer);
+}
+
+void SDLManager::presentRenderer() const {
+    SDL_RenderPresent(renderer);
+}
+
+void SDLManager::setDrawColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a) const {
+    SDL_SetRenderDrawColor(renderer, r, g, b, a);
+}
+
+void SDLManager::drawRect(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uint8 a) const {
+    setDrawColor(r, g, b, a);
+    SDL_RenderFillRect(renderer, &rect);
+}
+
+void SDLManager::delay(Uint32 ms) const {
+    SDL_Delay(ms);
+}
+
+int SDLManager::getWindowWidth() {
+    return windowWidth;
+}
+
+int SDLManager::getWindowHeight() {
+    return windowHeight;
 }

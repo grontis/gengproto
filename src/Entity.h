@@ -8,6 +8,5 @@ struct Entity {
 
     Entity(int x, int y, int w, int h, SDL_Color c);
 
-    void render(SDL_Renderer* renderer) const;
     void move(int dx, int dy);
 };
