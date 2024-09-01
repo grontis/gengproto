@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <functional>
 #include <random>
+#include <memory>
 
 #include <SDL2/SDL.h>
 
@@ -26,145 +27,240 @@ namespace std {
     };
 }
 
-bool isWithinRange(const Coordinate& coord, const Coordinate& center, int width, int height) {
-    return coord.x >= center.x && coord.x <= center.x + width &&
-        coord.y >= center.y && coord.y <= center.y + height;
-}
+//TODO refactor Entity struct into separate files
+struct Entity {
+    SDL_Rect rect;
+    SDL_Color color;
 
-//TODO refactor into classes and separate engine/game concerns into layers
-int main(int argc, char *argv[]) {
-    int windowWidth = 800;
-    int windowHeight = 600;
-
-
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        std::cerr << "SDL_Init Error: " << SDL_GetError() << std::endl;
-        return 1;
+    Entity(int x, int y, int w, int h, SDL_Color c)
+        : color(c)
+    {
+        rect = {x, y, w, h};
     }
 
-    SDL_Window *window = SDL_CreateWindow("gengproto", 100, 100, windowWidth, windowHeight, SDL_WINDOW_SHOWN);
-    if (window == nullptr) {
-        std::cerr << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
+    //TODO it doesn't feel right that rendering logic is here in this struct. move elsewhere
+        //put rendering in separate 
+    void render(SDL_Renderer* renderer) const {
+        SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+        SDL_RenderFillRect(renderer, &rect);
+    }
+
+    void move(int dx, int dy) {
+        rect.x += dx;
+        rect.y += dy;
+    }
+};
+///------ END Entity struct
+
+//TODO refactor SDLManager class into separate files
+class SDLManager {
+public:
+    SDLManager() {
+        if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+            throw std::runtime_error(std::string("SDL_Init Error: ") + SDL_GetError());
+        }
+
+        //TODO put "gengproto" into ApplicationTitle const somewhere
+        window = SDL_CreateWindow("gengproto", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                                  800, 600, SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP);
+        if (!window) {
+            SDL_Quit();
+            throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
+        }
+
+        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+        if (!renderer) {
+            SDL_DestroyWindow(window);
+            SDL_Quit();
+            throw std::runtime_error(std::string("SDL_CreateRenderer Error: ") + SDL_GetError());
+        }
+    }
+
+    ~SDLManager() {
+        if (renderer) SDL_DestroyRenderer(renderer);
+        if (window) SDL_DestroyWindow(window);
         SDL_Quit();
-        return 1;
     }
 
-    //SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+    SDL_Renderer* getRenderer() const { return renderer; }
+private:
+    SDL_Window* window = nullptr;
+    SDL_Renderer* renderer = nullptr;
+};
+///////------ END SDLManager class
 
-    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    if (renderer == nullptr) {
-        SDL_DestroyWindow(window);
-        std::cerr << "SDL_CreaterRenderer Error: " << SDL_GetError() << std::endl;
-        SDL_Quit(); 
-        return 1;
+
+//TODO refactor Game class into separate files
+class Game {
+public:
+    Game()
+        : engine(rd())
+    {
+        rectSpawnDist = std::uniform_int_distribution<int>(0, 3);
+        xDist = std::uniform_int_distribution<int>(100, windowWidth - 100);
+        yDist = std::uniform_int_distribution<int>(100, windowHeight - 100);
+
+        mainEntity = std::make_unique<Entity>(100, 100, 100, 100, SDL_Color{0, 255, 0, 255});
     }
 
-    std::unordered_map<Coordinate, SDL_Rect> xyRectMap;
+    void run() {
+        lastTime = SDL_GetTicks();
 
-    SDL_Rect mainRect;
-    mainRect.x = 100;
-    mainRect.y = 100;
-    mainRect.w = 100;
-    mainRect.h = 100;
+        while (!quit) {
+            handleEvents();
+            update();
+            render();
+            SDL_Delay(16);
+        }
+    }
 
-    bool quit = false;
-    SDL_Event event;
+private:
+    //TODO refactor/encapsulate SDL stuff?
+    SDLManager sdlManager;
+    SDL_Renderer* renderer = sdlManager.getRenderer();
 
+    //TODO refactor/encapsulate Entity/game object stuffs?
+    std::unique_ptr<Entity> mainEntity;
+    std::unordered_map<Coordinate, Entity> entities;
+
+    //TODO refactor/encapsulate RNG stuff?
     std::random_device rd;
-    std::default_random_engine engine(rd());
-    std::uniform_int_distribution<int> rectSpawnDist(0, 3);
-    std::uniform_int_distribution<int> xDist(100, windowWidth - 100);
-    std::uniform_int_distribution<int> yDist(100, windowHeight - 100);
+    std::default_random_engine engine;
+    std::uniform_int_distribution<int> rectSpawnDist;
+    std::uniform_int_distribution<int> xDist;
+    std::uniform_int_distribution<int> yDist;
+    
+    
+    //todo refactor/encapsulate spawn control stuff?
     int spawnWaitCount = 0;
-    int spawnWaitLimit = 25;
+    const int spawnWaitLimit = 25;
+
 
     int movementSpeed = 700;
 
-    Uint32 lastTime = SDL_GetTicks();
-    Uint32 currentTime;
+    Uint32 lastTime;
     float deltaTime;
 
+    const int windowWidth = 800;
+    const int windowHeight = 600;
 
-    //TODO current pacman like ideas.
-        //enemies come to attack player, harming and slowing down or decreasing in size
-        //powerups like time warp, speeding up player but slowing down the world. or a gravity pull
-        //power ups come from destroying enemies? 
+    bool quit = false;
 
-    while (!quit) {
-        currentTime = SDL_GetTicks();
-        deltaTime = (currentTime - lastTime) / 1000.0f; // convert to seconds
-        lastTime = currentTime;
-
+    void handleEvents() {
+        SDL_Event event;
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
                 quit = true;
             }
         }
+    }
+
+    void update() {
+        Uint32 currentTime = SDL_GetTicks();
+        deltaTime = (currentTime - lastTime) / 1000.0f; // Convert to seconds
+        lastTime = currentTime;
 
         const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
+        int dx = 0;
+        int dy = 0;
+
         if (currentKeyStates[SDL_SCANCODE_W]) {
-            mainRect.y -= movementSpeed * deltaTime;
+            dy -= static_cast<int>(movementSpeed * deltaTime);
         }
         if (currentKeyStates[SDL_SCANCODE_S]) {
-            mainRect.y += movementSpeed * deltaTime;
+            dy += static_cast<int>(movementSpeed * deltaTime);
         }
         if (currentKeyStates[SDL_SCANCODE_A]) {
-            mainRect.x -= movementSpeed * deltaTime;
+            dx -= static_cast<int>(movementSpeed * deltaTime);
         }
         if (currentKeyStates[SDL_SCANCODE_D]) {
-            mainRect.x += movementSpeed * deltaTime;
+            dx += static_cast<int>(movementSpeed * deltaTime);
         }
 
-        if (spawnWaitCount == spawnWaitLimit) {
-            int rectsToSpawn = rectSpawnDist(engine);
-            for (int i = 0; i < rectsToSpawn; i++) {
-                int x = xDist(engine);
-                int y = yDist(engine);
+        mainEntity->move(dx, dy);
 
-                std::vector<int> coordinates = {x, y};
-
-                SDL_Rect newRect;
-                newRect.x = x;
-                newRect.y = y;
-                newRect.w = 25;
-                newRect.h = 25;
-
-                xyRectMap[{x, y}] = newRect;
-            }
+        // Handle spawning
+        if (spawnWaitCount >= spawnWaitLimit) {
+            spawnEntities();
             spawnWaitCount = 0;
-        }
-        else {
+        } else {
             spawnWaitCount++;
         }
 
+        // Handle entity interactions
+        handleEntityInteractions();
+
+        // Debug: Print movement speed
+        std::cout << "speed: " << movementSpeed << std::endl;    
+    }
+
+    // Render Game Entities
+    void render() const {
+        // Clear screen with blue color
         SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
         SDL_RenderClear(renderer);
 
-        SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-        SDL_RenderFillRect(renderer, &mainRect);
+        // Render main entity (green)
+        mainEntity->render(renderer);
 
-        for (auto it = xyRectMap.begin(); it != xyRectMap.end(); ) {
-            if (isWithinRange(it->first, {mainRect.x, mainRect.y}, mainRect.w, mainRect.h)) {
-                it = xyRectMap.erase(it);
+        // Render other entities (magenta)
+        for (const auto& pair : entities) {
+            pair.second.render(renderer);
+        }
+
+        // Present the rendered frame
+        SDL_RenderPresent(renderer);
+    }
+
+    
+    // Spawn New Entities
+    void spawnEntities() {
+        int rectsToSpawn = rectSpawnDist(engine);
+        for (int i = 0; i < rectsToSpawn; ++i) {
+            int x = xDist(engine);
+            int y = yDist(engine);
+            Coordinate coord = {x, y};
+
+            // Avoid spawning on top of the main entity
+            if (!isWithinRange(coord, Coordinate{mainEntity->rect.x, mainEntity->rect.y}, mainEntity->rect.w, mainEntity->rect.h)) {
+                entities.emplace(coord, Entity(x, y, 25, 25, SDL_Color{255, 0, 255, 255}));
+            }
+        }
+    }
+
+    void handleEntityInteractions() {
+        std::vector<Coordinate> toRemove;
+        for (auto& pair : entities) {
+            if (isWithinRange(pair.first, Coordinate{mainEntity->rect.x, mainEntity->rect.y}, mainEntity->rect.w, mainEntity->rect.h)) {
+                toRemove.push_back(pair.first);
+
+                // TODO refactor Increase speed and size to function
                 movementSpeed += 25;
-                mainRect.w += 5;
-                mainRect.h += 5;
-            } else {
-                SDL_SetRenderDrawColor(renderer, 255, 0, 255, 255);
-                SDL_RenderFillRect(renderer, &it->second);
-                ++it;
+                mainEntity->rect.w += 5;
+                mainEntity->rect.h += 5;
             }
         }
 
-        SDL_RenderPresent(renderer);
-        SDL_Delay(16);
-
-        std::cout << "speed: " << movementSpeed << std::endl;
+        for (const auto& coord : toRemove) {
+            entities.erase(coord);
+        }
     }
 
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
+    bool isWithinRange(const Coordinate& coord, const Coordinate& center, int width, int height) const {
+        return coord.x >= center.x && coord.x <= center.x + width &&
+               coord.y >= center.y && coord.y <= center.y + height;
+    }
+};
+
+int main(int argc, char *argv[]) {
+    try {
+        Game game;
+        game.run();
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Exception: " << e.what() << std::endl;
+        return 1;
+    }
 
     return 0;
 }
