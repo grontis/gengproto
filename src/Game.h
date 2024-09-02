@@ -3,6 +3,7 @@
 #include "SDLManager.h"
 #include "Entity.h"
 #include "Coordinate.h"
+#include "RandomGenerator.h"
 #include <unordered_map>
 #include <random>
 #include <memory>
@@ -19,11 +20,13 @@ private:
     std::unordered_map<Coordinate, Entity> entitiesMap;
 
     //TODO refactor RNG specific code to its own class
-    std::random_device rd;
-    std::default_random_engine engine;
-    std::uniform_int_distribution<int> rectSpawnDist;
-    std::uniform_int_distribution<int> xDist;
-    std::uniform_int_distribution<int> yDist;
+    // std::random_device rd;
+    // std::default_random_engine engine;
+    // std::uniform_int_distribution<int> rectSpawnDist;
+    // std::uniform_int_distribution<int> xDist;
+    // std::uniform_int_distribution<int> yDist;
+
+    RandomGenerator rng;
     
     int spawnWaitCount = 0;
     const int spawnWaitLimit = 25;

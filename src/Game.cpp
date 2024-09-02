@@ -2,11 +2,11 @@
 
 //TODO refactor all SDL related code out of here other than the SDLManager. Encapsulate everything into that
 Game::Game()
-    : engine(rd())
+    : rng()
 {
-    rectSpawnDist = std::uniform_int_distribution<int>(0, 3);
-    xDist = std::uniform_int_distribution<int>(100, sdlManager.getWindowWidth() - 100);
-    yDist = std::uniform_int_distribution<int>(100, sdlManager.getWindowHeight() - 100);
+    // rectSpawnDist = std::uniform_int_distribution<int>(0, 3);
+    // xDist = std::uniform_int_distribution<int>(100, sdlManager.getWindowWidth() - 100);
+    // yDist = std::uniform_int_distribution<int>(100, sdlManager.getWindowHeight() - 100);
 
     mainEntity = std::make_unique<Entity>(GRectangle(100, 100, 100, 100, SDL_Color{0, 255, 0, 255}));
 }
@@ -84,10 +84,10 @@ void Game::render() const {
 }
 
 void Game::spawnEntities() {
-    int rectsToSpawn = rectSpawnDist(engine);
+    int rectsToSpawn = rng.generateUniformInt(0, 3);
     for (int i = 0; i < rectsToSpawn; ++i) {
-        int x = xDist(engine);
-        int y = yDist(engine);
+        int x = rng.generateUniformInt(100, sdlManager.getWindowWidth() - 100);
+        int y = rng.generateUniformInt(100, sdlManager.getWindowHeight() - 100);
         Coordinate coord = {x, y};
 
         if (!isWithinRange(coord, Coordinate{mainEntity->body.rect.x, mainEntity->body.rect.y}, mainEntity->body.rect.w, mainEntity->body.rect.h)) {

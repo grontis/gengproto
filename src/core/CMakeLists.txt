@@ -1,3 +1,3 @@
-add_library(core_library INTERFACE)
+add_library(core_library STATIC RandomGenerator.cpp)
 
-target_include_directories(core_library INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(core_library PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
