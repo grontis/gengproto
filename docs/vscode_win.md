@@ -10,7 +10,7 @@ Building with Cmake and GCC has given me some issues, especially with having MSV
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/gengproto.exe",
+            "program": "${workspaceFolder}/build/src/gengproto.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
