@@ -48,6 +48,10 @@ void SDLManager::delay(Uint32 ms) const {
     SDL_Delay(ms);
 }
 
+Uint32 SDLManager::getTicks() const {
+    return SDL_GetTicks();
+}
+
 int SDLManager::getWindowWidth() {
     return windowWidth;
 }

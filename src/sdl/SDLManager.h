@@ -14,6 +14,7 @@ public:
     void setDrawColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a) const;
     void drawRect(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uint8 a) const;
     void delay(Uint32 ms) const;
+    Uint32 getTicks() const;
 
     int getWindowWidth();
     int getWindowHeight();

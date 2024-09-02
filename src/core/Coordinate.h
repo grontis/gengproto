@@ -2,7 +2,6 @@
 
 #include <functional>
 
-// Coordinate struct definition
 struct Coordinate {
     int x;
     int y;

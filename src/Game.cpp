@@ -12,7 +12,7 @@ Game::Game()
 }
 
 void Game::run() {
-    lastTime = SDL_GetTicks();
+    lastTime = sdlManager.getTicks();
 
     while (!quit) {
         handleEvents();
