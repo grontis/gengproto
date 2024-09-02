@@ -1,12 +1,10 @@
 #pragma once
 
-#include <SDL2/SDL.h>
+#include "GRectangle.h"
 
 struct Entity {
-    SDL_Rect rect;
-    SDL_Color color;
+    GRectangle body;
 
-    Entity(int x, int y, int w, int h, SDL_Color c);
-
+    Entity(GRectangle r);
     void move(int dx, int dy);
 };

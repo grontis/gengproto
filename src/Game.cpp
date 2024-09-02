@@ -8,7 +8,7 @@ Game::Game()
     xDist = std::uniform_int_distribution<int>(100, sdlManager.getWindowWidth() - 100);
     yDist = std::uniform_int_distribution<int>(100, sdlManager.getWindowHeight() - 100);
 
-    mainEntity = std::make_unique<Entity>(100, 100, 100, 100, SDL_Color{0, 255, 0, 255});
+    mainEntity = std::make_unique<Entity>(GRectangle(100, 100, 100, 100, SDL_Color{0, 255, 0, 255}));
 }
 
 void Game::run() {
@@ -74,10 +74,10 @@ void Game::render() const {
     //TODO refactor drawRect to only need to pass in entity
         //ex: sdlManager.drawEntity(mainEntity)
         //then the rect/color data is encapsulated inside of draw method.
-    sdlManager.drawRect(mainEntity->rect, mainEntity->color.r, mainEntity->color.g, mainEntity->color.b, mainEntity->color.a);
+    sdlManager.drawRect(mainEntity->body.rect, mainEntity->body.color.r, mainEntity->body.color.g, mainEntity->body.color.b, mainEntity->body.color.a);
 
     for (const auto& pair : entitiesMap) {
-        sdlManager.drawRect(pair.second.rect, pair.second.color.r, pair.second.color.g, pair.second.color.b, pair.second.color.a);
+        sdlManager.drawRect(pair.second.body.rect, pair.second.body.color.r, pair.second.body.color.g, pair.second.body.color.b, pair.second.body.color.a);
     }
 
     sdlManager.presentRenderer();
@@ -90,8 +90,8 @@ void Game::spawnEntities() {
         int y = yDist(engine);
         Coordinate coord = {x, y};
 
-        if (!isWithinRange(coord, Coordinate{mainEntity->rect.x, mainEntity->rect.y}, mainEntity->rect.w, mainEntity->rect.h)) {
-            entitiesMap.emplace(coord, Entity(x, y, 25, 25, SDL_Color{255, 0, 255, 255}));
+        if (!isWithinRange(coord, Coordinate{mainEntity->body.rect.x, mainEntity->body.rect.y}, mainEntity->body.rect.w, mainEntity->body.rect.h)) {
+            entitiesMap.emplace(coord, Entity(GRectangle(x, y, 25, 25, SDL_Color{255, 0, 255, 255})));
         }
     }
 }
@@ -99,12 +99,12 @@ void Game::spawnEntities() {
 void Game::handleEntityInteractions() {
     std::vector<Coordinate> toRemove;
     for (auto& pair : entitiesMap) {
-        if (isWithinRange(pair.first, Coordinate{mainEntity->rect.x, mainEntity->rect.y}, mainEntity->rect.w, mainEntity->rect.h)) {
+        if (isWithinRange(pair.first, Coordinate{mainEntity->body.rect.x, mainEntity->body.rect.y}, mainEntity->body.rect.w, mainEntity->body.rect.h)) {
             toRemove.push_back(pair.first);
 
             movementSpeed += 25;
-            mainEntity->rect.w += 5;
-            mainEntity->rect.h += 5;
+            mainEntity->body.rect.w += 5;
+            mainEntity->body.rect.h += 5;
         }
     }
 

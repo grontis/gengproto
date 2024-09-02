@@ -1,12 +1,11 @@
 #include "Entity.h"
 
-Entity::Entity(int x, int y, int w, int h, SDL_Color c)
-    : color(c)
+Entity::Entity(GRectangle r)
+    : body(r)
 {
-    rect = {x, y, w, h};
 }
 
 void Entity::move(int dx, int dy) {
-    rect.x += dx;
-    rect.y += dy;
+    body.rect.x += dx;
+    body.rect.y += dy;
 }

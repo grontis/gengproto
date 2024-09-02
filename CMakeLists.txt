@@ -14,6 +14,7 @@ set(SOURCES
     src/SDLManager.cpp
     src/Game.cpp
     src/main.cpp
+    src/GRectangle.cpp
 )
 
 add_executable(gengproto ${SOURCES})
