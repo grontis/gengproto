@@ -2,7 +2,8 @@
 
 #include <random>
 
-class RandomGenerator {
+class RandomGenerator
+{
 public:
     RandomGenerator();
 

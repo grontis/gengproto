@@ -5,7 +5,8 @@ Entity::Entity(GRectangle r)
 {
 }
 
-void Entity::move(int dx, int dy) {
+void Entity::move(int dx, int dy)
+{
     body.rect.x += dx;
     body.rect.y += dy;
 }

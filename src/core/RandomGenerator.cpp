@@ -2,21 +2,25 @@
 
 RandomGenerator::RandomGenerator() : engine(rd()) {}
 
-int RandomGenerator::generateUniformInt(int min, int max) {
+int RandomGenerator::generateUniformInt(int min, int max)
+{
     std::uniform_int_distribution<int> dist(min, max);
     return dist(engine);
 }
 
-float RandomGenerator::generateUniformFloat(float min, float max) {
+float RandomGenerator::generateUniformFloat(float min, float max)
+{
     std::uniform_real_distribution<float> dist(min, max);
     return dist(engine);
 }
 
-double RandomGenerator::generateUniformDouble(double min, double max) {
+double RandomGenerator::generateUniformDouble(double min, double max)
+{
     std::uniform_real_distribution<double> dist(min, max);
     return dist(engine);
 }
 
-void RandomGenerator::reseed(unsigned int seed) {
+void RandomGenerator::reseed(unsigned int seed)
+{
     engine.seed(seed);
 }

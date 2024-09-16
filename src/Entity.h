@@ -2,7 +2,8 @@
 
 #include "GRectangle.h"
 
-struct Entity {
+struct Entity
+{
     GRectangle body;
 
     Entity(GRectangle r);

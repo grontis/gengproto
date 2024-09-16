@@ -2,20 +2,25 @@
 
 #include <functional>
 
-struct Coordinate {
+struct Coordinate
+{
     int x;
     int y;
 
-    bool operator==(const Coordinate& other) const {
+    bool operator==(const Coordinate &other) const
+    {
         return x == other.x && y == other.y;
     }
 };
 
 // Custom hash function for Coordinate struct
-namespace std {
+namespace std
+{
     template <>
-    struct hash<Coordinate> {
-        std::size_t operator()(const Coordinate& coord) const {
+    struct hash<Coordinate>
+    {
+        std::size_t operator()(const Coordinate &coord) const
+        {
             return std::hash<int>()(coord.x) ^ (std::hash<int>()(coord.y) << 1);
         }
     };

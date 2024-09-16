@@ -2,7 +2,8 @@
 
 #include <SDL2/SDL.h>
 
-struct GRectangle {
+struct GRectangle
+{
     SDL_Rect rect;
     SDL_Color color;
 
