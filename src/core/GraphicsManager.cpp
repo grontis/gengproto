@@ -1,4 +1,5 @@
 #include "GraphicsManager.h"
+#include "Colors.h"
 
 GraphicsManager::GraphicsManager(std::string windowName, Uint32 initWidth, Uint32 initHeight)
 {
@@ -36,14 +37,14 @@ GraphicsManager::~GraphicsManager()
     SDL_Quit();
 }
 
-void GraphicsManager::startFrame(Uint8 r, Uint8 g, Uint8 b, Uint8 a) const
+void GraphicsManager::startFrame(core::G_COLOR color, Uint8 alpha) const
 {
-    clearScreen(r, g, b, a);
+    clearScreen(color, alpha);
 }
 
-void GraphicsManager::draw(const GRectangle &rect) const
+void GraphicsManager::draw(const core::GRectangle &rect) const
 {
-    setDrawColor(rect.color.r, rect.color.g, rect.color.b, rect.color.a);
+    setDrawColor(rect.color, rect.alpha);
     SDL_RenderFillRect(renderer, &rect.rect);
 }
 
@@ -52,9 +53,16 @@ void GraphicsManager::render() const
     presentRenderer();
 }
 
-void GraphicsManager::clearScreen(Uint8 r, Uint8 g, Uint8 b, Uint8 a) const
+void GraphicsManager::clearScreen(core::G_COLOR color, Uint8 alpha) const
 {
-    SDL_SetRenderDrawColor(renderer, r, g, b, a);
+    //TODO any better data structure than tuple to use in this scenario?
+    std::tuple<Uint8, Uint8, Uint8> colorValues = core::Colors::getColor(color);
+
+    //TODO error handling here?
+    Uint8 r = std::get<0>(colorValues);
+    Uint8 g = std::get<1>(colorValues);
+    Uint8 b = std::get<2>(colorValues);
+    SDL_SetRenderDrawColor(renderer, r, g, b, alpha);
     SDL_RenderClear(renderer);
 }
 
@@ -63,9 +71,16 @@ void GraphicsManager::presentRenderer() const
     SDL_RenderPresent(renderer);
 }
 
-void GraphicsManager::setDrawColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a) const
+void GraphicsManager::setDrawColor(core::G_COLOR color, Uint8 alpha) const
 {
-    SDL_SetRenderDrawColor(renderer, r, g, b, a);
+    std::tuple<Uint8, Uint8, Uint8> colorValues = core::Colors::getColor(color);
+
+    //TODO error handling here?
+    Uint8 r = std::get<0>(colorValues);
+    Uint8 g = std::get<1>(colorValues);
+    Uint8 b = std::get<2>(colorValues);
+
+    SDL_SetRenderDrawColor(renderer, r, g, b, alpha);
 }
 
 int GraphicsManager::getWindowWidth()

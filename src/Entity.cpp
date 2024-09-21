@@ -1,6 +1,6 @@
 #include "Entity.h"
 
-Entity::Entity(GRectangle r)
+Entity::Entity(core::GRectangle r)
     : body(r)
 {
 }

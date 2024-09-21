@@ -35,6 +35,7 @@ private:
     void setupEventHandlers();
     void update();
     void render() const;
+    void spawn();
     void spawnEntities();
     void handleEntityInteractions();
     bool isWithinRange(const Coordinate &coord, const Coordinate &center, int width, int height) const;

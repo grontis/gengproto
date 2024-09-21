@@ -11,8 +11,8 @@ public:
     GraphicsManager(std::string windowName, Uint32 initWidth, Uint32 initHeigh);
     ~GraphicsManager();
 
-    void startFrame(Uint8 r, Uint8 g, Uint8 b, Uint8 a) const;
-    void draw(const GRectangle &rect) const;
+    void startFrame(core::G_COLOR color, Uint8 alpha) const;
+    void draw(const core::GRectangle &rect) const;
     void render() const;
 
     //TODO refactor into Time class
@@ -31,7 +31,7 @@ private:
     Uint32 windowWidth;
     Uint32 windowHeight;
 
-    void clearScreen(Uint8 r, Uint8 g, Uint8 b, Uint8 a) const;
+    void clearScreen(core::G_COLOR color, Uint8 alpha) const;
     void presentRenderer() const;
-    void setDrawColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a) const;
+    void setDrawColor(core::G_COLOR color, Uint8 alpha) const;
 };

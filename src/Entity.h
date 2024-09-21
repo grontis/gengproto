@@ -4,8 +4,8 @@
 
 struct Entity
 {
-    GRectangle body;
+    core::GRectangle body;
 
-    Entity(GRectangle r);
+    Entity(core::GRectangle r);
     void move(int dx, int dy);
 };

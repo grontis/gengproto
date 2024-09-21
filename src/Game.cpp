@@ -4,7 +4,7 @@ Game::Game()
     : rng(), graphics("gengproto", 2560, 1440)
 {
     setupEventHandlers();
-    mainEntity = std::make_unique<Entity>(GRectangle(100, 100, 100, 100, SDL_Color{0, 255, 0, 255}));
+    mainEntity = std::make_unique<Entity>(core::GRectangle(100, 100, 100, 100, core::G_COLOR_GREEN, 255));
 }
 
 void Game::run()
@@ -45,8 +45,28 @@ void Game::update()
     lastTime = currentTime;
 
     eventManager.handleEvents();
+    spawn();
+    handleEntityInteractions();
+}
 
-    //Todo refactor into spawnEntities function
+void Game::render() const
+{
+    // TODO refactor and implement color constants to support better readability
+    // ex: graphics.startFrame(GColor_BLUE, 255);
+    graphics.startFrame(core::G_COLOR_BLUE, 255);
+
+    graphics.draw(mainEntity->body);
+    for (const auto &pair : entitiesMap)
+    {
+        graphics.draw(pair.second.body);
+    }
+
+    // TODO any way to further abstract away the need to start/end a render frame once here at the game level?
+    graphics.render();
+}
+
+void Game::spawn()
+{
     if (spawnWaitCount >= spawnWaitLimit)
     {
         spawnEntities();
@@ -56,25 +76,6 @@ void Game::update()
     {
         spawnWaitCount++;
     }
-    //
-
-    handleEntityInteractions();
-}
-
-void Game::render() const
-{
-    // TODO refactor and implement color constants to support better readability
-    // ex: graphics.startFrame(GColor_BLUE, 255);
-    graphics.startFrame(0, 0, 255, 255);
-
-    graphics.draw(mainEntity->body);
-    for (const auto &pair : entitiesMap)
-    {
-        graphics.draw(pair.second.body);
-    }
-
-    //TODO any way to further abstract away the need to start/end a render frame once here at the game level?
-    graphics.render();
 }
 
 void Game::spawnEntities()
@@ -88,7 +89,7 @@ void Game::spawnEntities()
 
         if (!isWithinRange(coord, Coordinate{mainEntity->body.rect.x, mainEntity->body.rect.y}, mainEntity->body.rect.w, mainEntity->body.rect.h))
         {
-            entitiesMap.emplace(coord, Entity(GRectangle(x, y, 25, 25, SDL_Color{255, 0, 255, 255})));
+            entitiesMap.emplace(coord, Entity(core::GRectangle(x, y, 25, 25, core::G_COLOR_PURPLE, 255)));
         }
     }
 }
