@@ -4,7 +4,7 @@ Game::Game()
     : rng(), graphics("gengproto", 2560, 1440)
 {
     setupEventHandlers();
-    mainEntity = std::make_unique<Entity>(core::GRectangle(100, 100, 100, 100, core::G_COLOR_GREEN, 255));
+    mainEntity = std::make_unique<Entity>(core::GRectangle(100, 100, 100, 100, core::G_COLOR_YELLOW, 255));
 }
 
 void Game::run()
@@ -51,9 +51,7 @@ void Game::update()
 
 void Game::render() const
 {
-    // TODO refactor and implement color constants to support better readability
-    // ex: graphics.startFrame(GColor_BLUE, 255);
-    graphics.startFrame(core::G_COLOR_BLUE, 255);
+    graphics.startFrame(core::G_COLOR_DARK_GRAY, 255);
 
     graphics.draw(mainEntity->body);
     for (const auto &pair : entitiesMap)
