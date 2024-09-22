@@ -55,10 +55,10 @@ void GraphicsManager::render() const
 
 void GraphicsManager::clearScreen(core::G_COLOR color, Uint8 alpha) const
 {
-    //TODO any better data structure than tuple to use in this scenario?
+    // TODO any better data structure than tuple to use in this scenario?
     std::tuple<Uint8, Uint8, Uint8> colorValues = core::Colors::getColor(color);
 
-    //TODO error handling here?
+    // TODO error handling here?
     Uint8 r = std::get<0>(colorValues);
     Uint8 g = std::get<1>(colorValues);
     Uint8 b = std::get<2>(colorValues);
@@ -75,7 +75,7 @@ void GraphicsManager::setDrawColor(core::G_COLOR color, Uint8 alpha) const
 {
     std::tuple<Uint8, Uint8, Uint8> colorValues = core::Colors::getColor(color);
 
-    //TODO error handling here?
+    // TODO error handling here?
     Uint8 r = std::get<0>(colorValues);
     Uint8 g = std::get<1>(colorValues);
     Uint8 b = std::get<2>(colorValues);

@@ -1,12 +1,25 @@
-#include "Game.h"
 #include <iostream>
+
+#include "Game.h"
+#include "Tetris.h"
+
+void runTetris()
+{
+    Tetris tetris;
+    tetris.run();
+}
+
+void runDemoGame()
+{
+    Game game;
+    game.run();
+}
 
 int main(int argc, char *argv[])
 {
     try
     {
-        Game game;
-        game.run();
+        runTetris();
     }
     catch (const std::exception &e)
     {

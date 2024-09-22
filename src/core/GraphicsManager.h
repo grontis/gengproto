@@ -12,6 +12,8 @@ public:
     ~GraphicsManager();
 
     void startFrame(core::G_COLOR color, Uint8 alpha) const;
+
+    //TODO implement "generic" draw method that can be either overridden, or provided inline actions
     void draw(const core::GRectangle &rect) const;
     void render() const;
 

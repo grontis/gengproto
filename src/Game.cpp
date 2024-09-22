@@ -4,7 +4,7 @@ Game::Game()
     : rng(), graphics("gengproto", 2560, 1440)
 {
     setupEventHandlers();
-    mainEntity = std::make_unique<Entity>(core::GRectangle(100, 100, 100, 100, core::G_COLOR_YELLOW, 255));
+    mainEntity = std::make_unique<Entity>(core::GRectangle(100, 100, 100, 100, core::G_COLOR_LIGHT_GREEN, 255));
 }
 
 void Game::run()
@@ -51,7 +51,7 @@ void Game::update()
 
 void Game::render() const
 {
-    graphics.startFrame(core::G_COLOR_DARK_GRAY, 255);
+    graphics.startFrame(core::G_COLOR_DARK_BLUE, 255);
 
     graphics.draw(mainEntity->body);
     for (const auto &pair : entitiesMap)
@@ -87,7 +87,7 @@ void Game::spawnEntities()
 
         if (!isWithinRange(coord, Coordinate{mainEntity->body.rect.x, mainEntity->body.rect.y}, mainEntity->body.rect.w, mainEntity->body.rect.h))
         {
-            entitiesMap.emplace(coord, Entity(core::GRectangle(x, y, 25, 25, core::G_COLOR_PURPLE, 255)));
+            entitiesMap.emplace(coord, Entity(core::GRectangle(x, y, 25, 25, core::G_COLOR_LIGHT_RED, 255)));
         }
     }
 }
