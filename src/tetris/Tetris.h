@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <random>
 #include <memory>
+#include "Piece.h"
 
 class Tetris
 {
@@ -20,7 +21,10 @@ private:
 
     Uint32 lastTime;
     float deltaTime;
+    int movementSpeed = 700;
     bool quit = false;
+
+    std::unique_ptr<Piece> currentPiece;
 
     void setupEventHandlers();
     void update();

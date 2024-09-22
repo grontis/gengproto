@@ -14,6 +14,7 @@ class Piece
 
         void addRectangle(const core::GRectangle& rect);
         void draw(const GraphicsManager* graphics) const override;
+        void move(int dx, int dy);
     private:
         std::vector<core::GRectangle> body;
 };
