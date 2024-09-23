@@ -13,8 +13,9 @@ public:
 
     void startFrame(core::G_COLOR color, Uint8 alpha) const;
 
-    //TODO implement "generic" draw method that can be either overridden, or provided inline actions
-    void draw(const core::GRectangle &rect) const;
+    void draw(const core::GRectangle &rect) const; //TODO rename to drawRect?
+    void drawLine(int x1, int y1, int x2, int y2) const;
+
     void render() const;
 
     //TODO refactor into Time class

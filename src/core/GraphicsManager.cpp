@@ -48,6 +48,12 @@ void GraphicsManager::draw(const core::GRectangle &rect) const
     SDL_RenderFillRect(renderer, &rect.rect);
 }
 
+void GraphicsManager::drawLine(int x1, int y1, int x2, int y2) const
+{
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); //TODO parameter of color?
+    SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
+}
+
 void GraphicsManager::render() const
 {
     presentRenderer();

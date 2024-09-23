@@ -1,23 +1,30 @@
 #pragma once
+#include <unordered_map>
 
-#include "Colors.h"
+#include <SDL2/SDL.h>
+#include "Drawable.h"
+#include "Coordinate.h"
 
 class Grid
+    : Drawable
 {
-    public:
-        Grid(int w, int h, float cellWidth, float cellHeight, float screenWidth, float screenHeight, core::G_COLOR c);
-        
-    private:
-        int width;
-        int height;
-        float cellWidth;// = screenWidth / gridWidth;
-        float cellHeight;// = screenHeight / gridHeight;
-        float cellSize;// = std::min(cellWidth, cellHeight);
-        float totalWidth = cellSize * width;
-        float totalHeight = cellSize * width;
+public:
+    Grid();
 
-        float offsetX;// = (screenWidth - gridTotalWidth) / 2;
-        float offsetY;// = (screenHeight - gridTotalHeight) / 2;
+    int getGridX() const;
+    int getGridY() const;
+    int getGridWidth() const;
+    int getGridHeight() const;
 
-        core::G_COLOR color;
+    void draw(const GraphicsManager *graphics) const override;
+
+private:
+    int padding;
+    int gridSquareSize;
+    int gridX, gridY;
+    int gridWidth, gridHeight;
+    int screenWidth, screenHeight;
+
+    void drawVerticalLines(const GraphicsManager *graphics) const;
+    void drawHorizontalLines(const GraphicsManager *graphics) const;
 };

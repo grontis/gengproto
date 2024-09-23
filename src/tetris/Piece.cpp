@@ -18,8 +18,22 @@ void Piece::draw(const GraphicsManager *graphics) const
     }
 }
 
-void Piece::move(int dx, int dy)
+void Piece::move(int dx, int dy, const Grid& grid)
 {
+    int gridLeft = grid.getGridX();
+    int gridRight = grid.getGridX() + grid.getGridWidth();
+    int gridTop = grid.getGridY();
+    int gridBottom = grid.getGridY() + grid.getGridHeight();
+
+    for (const auto& part : body) {
+        int newX = part.rect.x + dx;
+        int newY = part.rect.y + dy;
+
+        if (newX < gridLeft || newX + part.rect.w > gridRight || newY < gridTop || newY + part.rect.h > gridBottom) {
+            return;
+        }
+    }
+
     for (auto& part : body)
     {
         part.rect.x += dx;
