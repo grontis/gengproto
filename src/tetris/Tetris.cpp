@@ -3,18 +3,13 @@
 Tetris::Tetris()
     : rng(), graphics("gengproto", 2560, 1440)
 {
+    initializePieceTemplates();
     grid = std::make_unique<Grid>();
     currentPiece = std::make_unique<Piece>();
 
-    //TODO define objects that represent templates for tetris shapes. 
-        // Rectangles to construct, color
-        //put in a map and then randomly select
-
-    currentPiece->addRectangle(core::GRectangle(gridX + (gridSquareSize * 3), gridY, gridSquareSize, gridSquareSize, core::G_COLOR_ORANGE, 100));
-    currentPiece->addRectangle(core::GRectangle(gridX + (gridSquareSize * 2), gridY, gridSquareSize, gridSquareSize, core::G_COLOR_ORANGE, 100));
-    currentPiece->addRectangle(core::GRectangle(gridX + (gridSquareSize * 4), gridY, gridSquareSize, gridSquareSize, core::G_COLOR_ORANGE, 100));
-    currentPiece->addRectangle(core::GRectangle(gridX + (gridSquareSize * 4), gridY + gridSquareSize, gridSquareSize, gridSquareSize, core::G_COLOR_ORANGE, 100));
-
+    //TODO randomizer for which template is used
+    const auto& pieceTemplate = pieceTemplates["T"];
+    currentPiece->initializeFromTemplate(pieceTemplate, 0, gridX + (gridSquareSize * 3), gridY, gridSquareSize);
 
     setupEventHandlers();
 }
@@ -36,7 +31,17 @@ Uint32 moveInterval = 150; // Move every 150 milliseconds
 
 void Tetris::setupEventHandlers()
 {
-    
+    //TODO move delay is hacky and also doesn't allow for moving and rotation at the same time. need to fix this
+
+    eventManager.registerKeyAction(SDL_SCANCODE_W, [this]()
+                                {
+                                    Uint32 currentTime = SDL_GetTicks();
+                                    if (currentTime - lastMoveTime > moveInterval) {
+                                        currentPiece->rotate();
+                                        lastMoveTime = currentTime;
+                                    }
+                                });
+
     eventManager.registerKeyAction(SDL_SCANCODE_S, [this]()
                                    {
                                        Uint32 currentTime = SDL_GetTicks();

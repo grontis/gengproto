@@ -1,4 +1,4 @@
-add_library(tetris_library Tetris.cpp Piece.cpp Grid.cpp)
+add_library(tetris_library Tetris.cpp Piece.cpp Grid.cpp PieceTemplates.cpp)
 
 target_link_libraries(tetris_library core_library ${SDL2_LIBRARIES})
 
