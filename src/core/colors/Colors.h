@@ -6,6 +6,7 @@
 
 namespace core
 {
+    //TODO instead of G_ prefix use a colors namespace
     typedef enum 
     {
         G_COLOR_RED,
