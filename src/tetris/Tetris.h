@@ -1,14 +1,17 @@
 #pragma once
 
+#include <unordered_map>
+#include <random>
+#include <memory>
+
 #include "GraphicsManager.h"
 #include "Coordinate.h"
 #include "RandomGenerator.h"
 #include "EventManager.h"
-#include <unordered_map>
-#include <random>
-#include <memory>
+
 #include "Piece.h"
 #include "Grid.h"
+#include "PieceTemplates.h"
 
 class Tetris
 {

@@ -7,8 +7,7 @@ Tetris::Tetris()
     grid = std::make_unique<Grid>();
     currentPiece = std::make_unique<Piece>();
 
-    //TODO randomizer for which template is used
-    const auto& pieceTemplate = pieceTemplates["T"];
+    const auto& pieceTemplate = pieceTemplates[getRandomPieceTemplate()];
     currentPiece->initializeFromTemplate(pieceTemplate, 0, gridX + (gridSquareSize * 3), gridY, gridSquareSize);
 
     setupEventHandlers();
