@@ -1,6 +1,9 @@
 #pragma once
 
-typedef enum
+namespace core
 {
-    //TODO define and use errors.
-} ERRORS;
+    typedef enum
+    {
+        // TODO define and use errors.
+    } ERRORS;
+}

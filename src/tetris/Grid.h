@@ -2,29 +2,33 @@
 #include <unordered_map>
 
 #include <SDL2/SDL.h>
+
 #include "Drawable.h"
 #include "Coordinate.h"
 
-class Grid
-    : Drawable
+namespace tetris
 {
-public:
-    Grid();
+    class Grid
+        : core::Drawable
+    {
+    public:
+        Grid();
 
-    int getGridX() const;
-    int getGridY() const;
-    int getGridWidth() const;
-    int getGridHeight() const;
+        int getGridX() const;
+        int getGridY() const;
+        int getGridWidth() const;
+        int getGridHeight() const;
 
-    void draw(const GraphicsManager *graphics) const override;
+        void draw(const core::GraphicsManager *graphics) const override;
 
-private:
-    int padding;
-    int gridSquareSize;
-    int gridX, gridY;
-    int gridWidth, gridHeight;
-    int screenWidth, screenHeight;
+    private:
+        int _padding;
+        int _gridSquareSize;
+        int _gridX, _gridY;
+        int _gridWidth, _gridHeight;
+        int _screenWidth, _screenHeight;
 
-    void drawVerticalLines(const GraphicsManager *graphics) const;
-    void drawHorizontalLines(const GraphicsManager *graphics) const;
-};
+        void drawVerticalLines(const core::GraphicsManager *graphics) const;
+        void drawHorizontalLines(const core::GraphicsManager *graphics) const;
+    };
+}

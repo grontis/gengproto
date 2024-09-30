@@ -23,29 +23,29 @@ namespace tetris
         void run();
 
     private:
-        GraphicsManager graphics;
-        EventManager eventManager;
-        RandomGenerator rng;
+        core::GraphicsManager _graphics;
+        core::EventManager _eventManager;
+        core::RandomGenerator _rng;
 
-        Uint32 lastTime;
-        float deltaTime;
-        bool quit = false;
+        Uint32 _lastTime;
+        float _deltaTime;
+        bool _quit = false;
 
-        Uint32 movementCooldown = 100;
-        Uint32 rotationCooldown = 150;
-        std::unordered_map<tetris::CONTROLS, Uint32> lastMoveTimes;
+        Uint32 _movementCooldown = 100;
+        Uint32 _rotationCooldown = 150;
+        std::unordered_map<tetris::CONTROLS, Uint32> _lastMoveTimes;
 
-        int padding = 40;
-        int screenWidth = 2560;
-        int screenHeight = 1440;
-        int gridSquareSize = (screenHeight - 2 * padding) / 22;
-        int gridWidth = 10 * gridSquareSize;
-        int gridHeight = 20 * gridSquareSize;
-        int gridX = (screenWidth - gridWidth) / 2;   // Center horizontally
-        int gridY = (screenHeight - gridHeight) / 2; // Center vertically
+        int _padding = 40;
+        int _screenWidth = 2560;
+        int _screenHeight = 1440;
+        int _gridSquareSize = (_screenHeight - 2 * _padding) / 22;
+        int _gridWidth = 10 * _gridSquareSize;
+        int _gridHeight = 20 * _gridSquareSize;
+        int _gridX = (_screenWidth - _gridWidth) / 2;   // Center horizontally
+        int _gridY = (_screenHeight - _gridHeight) / 2; // Center vertically
 
-        std::unique_ptr<Piece> currentPiece;
-        std::unique_ptr<Grid> grid;
+        std::unique_ptr<Piece> _currentPiece;
+        std::unique_ptr<Grid> _grid;
 
         void setupEventHandlers();
         void update();

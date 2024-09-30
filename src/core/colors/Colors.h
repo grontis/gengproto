@@ -1,13 +1,14 @@
 #pragma once
 
-#include <SDL2/SDL.h>
 #include <map>
 #include <tuple>
 
+#include <SDL2/SDL.h>
+
 namespace core
 {
-    //TODO instead of G_ prefix use a colors namespace
-    typedef enum 
+    // TODO instead of G_ prefix use a colors namespace
+    typedef enum
     {
         G_COLOR_RED,
         G_COLOR_GREEN,
@@ -72,7 +73,7 @@ namespace core
         static std::tuple<Uint8, Uint8, Uint8> getColor(G_COLOR color);
 
     private:
-        static std::map<G_COLOR, std::tuple<Uint8, Uint8, Uint8>> colorsMap;
+        static std::map<G_COLOR, std::tuple<Uint8, Uint8, Uint8>> _colorsMap;
 
         static void initColorsMap();
     };

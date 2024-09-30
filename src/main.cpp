@@ -1,18 +1,11 @@
 #include <iostream>
 
-#include "Game.h"
 #include "Tetris.h"
 
 void runTetris()
 {
     tetris::Tetris tetris;
     tetris.run();
-}
-
-void runDemoGame()
-{
-    Game game;
-    game.run();
 }
 
 int main(int argc, char *argv[])

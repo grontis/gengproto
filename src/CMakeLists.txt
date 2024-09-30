@@ -2,8 +2,6 @@ add_subdirectory(core)
 add_subdirectory(tetris)
 
 set(SOURCES
-    Entity.cpp
-    Game.cpp
     main.cpp
 )
 
