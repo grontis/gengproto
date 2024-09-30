@@ -20,7 +20,7 @@ namespace tetris
         void addRectangle(const core::GRectangle &rect);
         void draw(const core::GraphicsManager *graphics) const override;
         void move(int dx, int dy, const Grid &grid);
-        void rotate();
+        void rotate(const Grid &grid);
 
     private:
         std::vector<core::GRectangle> _body;

@@ -33,7 +33,7 @@ namespace tetris
                                         { 
             Uint32 currentTime = SDL_GetTicks();
             if (currentTime - _lastMoveTimes[CONTROLS_ROTATE] > _rotationCooldown) {
-                _currentPiece->rotate();
+                _currentPiece->rotate(*_grid);
                 _lastMoveTimes[CONTROLS_ROTATE] = currentTime;
             } });
 

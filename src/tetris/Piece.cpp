@@ -62,10 +62,48 @@ namespace tetris
         _currentY += dy;
     }
 
-    void Piece::rotate()
+    void Piece::rotate(const Grid &grid)
     {
-        int newRotationIndex = (_rotationIndex + 1 + _pieceTemplate.rotations.size()) % _pieceTemplate.rotations.size();
+        int newRotationIndex = (_rotationIndex + 1) % _pieceTemplate.rotations.size();
+        const auto &newRotation = _pieceTemplate.rotations[newRotationIndex];
+
+        int gridLeft = grid.getGridX();
+        int gridRight = grid.getGridX() + grid.getGridWidth();
+        int gridTop = grid.getGridY();
+        int gridBottom = grid.getGridY() + grid.getGridHeight();
+
+        int shiftX = 0;
+        int shiftY = 0;
+
+        for (const auto &coord : newRotation)
+        {
+            int newX = _currentX + coord.x * _gridSquareSize;
+            int newY = _currentY + coord.y * _gridSquareSize;
+
+            if (newX < gridLeft)
+            {
+                shiftX = std::max(shiftX, gridLeft - newX);
+            }
+            else if (newX + _gridSquareSize > gridRight)
+            {
+                shiftX = std::min(shiftX, gridRight - (newX + _gridSquareSize));
+            }
+
+            if (newY < gridTop)
+            {
+                shiftY = std::max(shiftY, gridTop - newY);
+            }
+            else if (newY + _gridSquareSize > gridBottom)
+            {
+                shiftY = std::min(shiftY, gridBottom - (newY + _gridSquareSize));
+            }
+        }
+
+        _currentX += shiftX;
+        _currentY += shiftY;
+
         initializeFromTemplate(_pieceTemplate, newRotationIndex, _currentX, _currentY, _gridSquareSize);
         _rotationIndex = newRotationIndex;
     }
+
 }
