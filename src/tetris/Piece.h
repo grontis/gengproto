@@ -28,4 +28,7 @@ class Piece
         int screenHeight = 1440;
         int gridSquareSize = (screenHeight - 2 * padding) / 22;
         int rotationIndex = 0;
+
+        int currentX = 975 + (61 * 3);
+        int currentY = 110;
 };
