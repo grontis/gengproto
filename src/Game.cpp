@@ -22,16 +22,16 @@ void Game::run()
 void Game::setupEventHandlers()
 {
     // TODO refactor/encapsulate SDL scancodes into wrapper implementation so games class dont need to touch SDL
-    eventManager.registerKeyAction(SDL_SCANCODE_W, [this]()
+    eventManager.registerKeyAction(SDL_SCANCODE_W, KEY_EVENT_TYPE::KEYHELD, [this]()
                                    { mainEntity->move(0, -static_cast<int>(movementSpeed * deltaTime)); });
 
-    eventManager.registerKeyAction(SDL_SCANCODE_S, [this]()
+    eventManager.registerKeyAction(SDL_SCANCODE_S, KEY_EVENT_TYPE::KEYHELD, [this]()
                                    { mainEntity->move(0, static_cast<int>(movementSpeed * deltaTime)); });
 
-    eventManager.registerKeyAction(SDL_SCANCODE_A, [this]()
+    eventManager.registerKeyAction(SDL_SCANCODE_A, KEY_EVENT_TYPE::KEYHELD, [this]()
                                    { mainEntity->move(-static_cast<int>(movementSpeed * deltaTime), 0); });
 
-    eventManager.registerKeyAction(SDL_SCANCODE_D, [this]()
+    eventManager.registerKeyAction(SDL_SCANCODE_D, KEY_EVENT_TYPE::KEYHELD, [this]()
                                    { mainEntity->move(static_cast<int>(movementSpeed * deltaTime), 0); });
 
     eventManager.registerQuitAction([this]()

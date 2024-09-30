@@ -12,35 +12,43 @@
 #include "Piece.h"
 #include "Grid.h"
 #include "PieceTemplates.h"
+#include "Controls.h"
 
-class Tetris
+namespace tetris
 {
-public:
-    Tetris();
-    void run();
-private:
-    GraphicsManager graphics;
-    EventManager eventManager;
-    RandomGenerator rng;
+    class Tetris
+    {
+    public:
+        Tetris();
+        void run();
 
-    Uint32 lastTime;
-    float deltaTime;
-    int movementSpeed = 700;
-    bool quit = false;
+    private:
+        GraphicsManager graphics;
+        EventManager eventManager;
+        RandomGenerator rng;
 
-    int padding = 40;
-    int screenWidth = 2560;
-    int screenHeight = 1440;
-    int gridSquareSize = (screenHeight - 2 * padding) / 22;
-    int gridWidth = 10 * gridSquareSize;
-    int gridHeight = 20 * gridSquareSize;
-    int gridX = (screenWidth - gridWidth) / 2;   // Center horizontally
-    int gridY = (screenHeight - gridHeight) / 2; // Center vertically
+        Uint32 lastTime;
+        float deltaTime;
+        bool quit = false;
 
-    std::unique_ptr<Piece> currentPiece;
-    std::unique_ptr<Grid> grid;
+        Uint32 movementCooldown = 100;
+        Uint32 rotationCooldown = 150;
+        std::unordered_map<tetris::CONTROLS, Uint32> lastMoveTimes;
 
-    void setupEventHandlers();
-    void update();
-    void render() const;
-};
+        int padding = 40;
+        int screenWidth = 2560;
+        int screenHeight = 1440;
+        int gridSquareSize = (screenHeight - 2 * padding) / 22;
+        int gridWidth = 10 * gridSquareSize;
+        int gridHeight = 20 * gridSquareSize;
+        int gridX = (screenWidth - gridWidth) / 2;   // Center horizontally
+        int gridY = (screenHeight - gridHeight) / 2; // Center vertically
+
+        std::unique_ptr<Piece> currentPiece;
+        std::unique_ptr<Grid> grid;
+
+        void setupEventHandlers();
+        void update();
+        void render() const;
+    };
+}

@@ -5,7 +5,7 @@
 
 void runTetris()
 {
-    Tetris tetris;
+    tetris::Tetris tetris;
     tetris.run();
 }
 

@@ -1,92 +1,81 @@
 #include "Tetris.h"
 
-Tetris::Tetris()
-    : rng(), graphics("gengproto", 2560, 1440)
+namespace tetris
 {
-    initializePieceTemplates();
-    grid = std::make_unique<Grid>();
-    currentPiece = std::make_unique<Piece>();
-
-    const auto& pieceTemplate = pieceTemplates[getRandomPieceTemplate()];
-    currentPiece->initializeFromTemplate(pieceTemplate, 0, gridX + (gridSquareSize * 3), gridY, gridSquareSize);
-
-    setupEventHandlers();
-}
-
-void Tetris::run()
-{
-    lastTime = graphics.getTicks();
-
-    while (!quit)
+    Tetris::Tetris()
+        : rng(), graphics("gengproto", 2560, 1440)
     {
-        update();
-        render();
-        graphics.delay(16);
+        initializePieceTemplates();
+        grid = std::make_unique<Grid>();
+        currentPiece = std::make_unique<Piece>();
+
+        const auto &pieceTemplate = pieceTemplates[getRandomPieceTemplate()];
+        currentPiece->initializeFromTemplate(pieceTemplate, 0, gridX + (gridSquareSize * 3), gridY, gridSquareSize);
+
+        setupEventHandlers();
     }
-}
 
-Uint32 lastMoveTime = 0;   // Store the last time the piece moved
-Uint32 moveInterval = 150; // Move every 150 milliseconds
+    void Tetris::run()
+    {
+        lastTime = graphics.getTicks();
 
-void Tetris::setupEventHandlers()
-{
-    //TODO move delay is hacky and also doesn't allow for moving and rotation at the same time. need to fix this
+        while (!quit)
+        {
+            update();
+            render();
+            graphics.delay(16);
+        }
+    }
 
-    eventManager.registerKeyAction(SDL_SCANCODE_W, [this]()
-                                {
-                                    Uint32 currentTime = SDL_GetTicks();
-                                    if (currentTime - lastMoveTime > moveInterval) {
-                                        currentPiece->rotate();
-                                        lastMoveTime = currentTime;
-                                    }
-                                });
+    void Tetris::setupEventHandlers()
+    {
+        eventManager.registerKeyAction(SDL_SCANCODE_W, KEY_EVENT_TYPE::KEYDOWN, [this]()
+                                       { 
+            Uint32 currentTime = SDL_GetTicks();
+            if (currentTime - lastMoveTimes[CONTROLS_ROTATE] > rotationCooldown) {
+                currentPiece->rotate();
+                lastMoveTimes[CONTROLS_ROTATE] = currentTime;
+            } });
 
-    eventManager.registerKeyAction(SDL_SCANCODE_S, [this]()
-                                   {
-                                       Uint32 currentTime = SDL_GetTicks();
-                                       if (currentTime - lastMoveTime > moveInterval) {
-                                           currentPiece->move(0, gridSquareSize, *grid);
-                                           lastMoveTime = currentTime;
-                                       }
-                                   });
+        eventManager.registerKeyAction(SDL_SCANCODE_A, KEY_EVENT_TYPE::KEYHELD, [this]()
+                                       {
+            Uint32 currentTime = SDL_GetTicks();
+            if (currentTime - lastMoveTimes[CONTROLS_X] > movementCooldown) {
+                currentPiece->move(-gridSquareSize, 0, *grid);
+                lastMoveTimes[CONTROLS_X] = currentTime;
+            } });
 
-    eventManager.registerKeyAction(SDL_SCANCODE_A, [this]()
-                                   {
-                                       Uint32 currentTime = SDL_GetTicks();
-                                       if (currentTime - lastMoveTime > moveInterval) {
-                                           currentPiece->move(-gridSquareSize, 0, *grid);
-                                           lastMoveTime = currentTime;
-                                       }
-                                   });
+        eventManager.registerKeyAction(SDL_SCANCODE_D, KEY_EVENT_TYPE::KEYHELD, [this]()
+                                       {
+            Uint32 currentTime = SDL_GetTicks();
+            if (currentTime - lastMoveTimes[CONTROLS_X] > movementCooldown) {
+                currentPiece->move(gridSquareSize, 0, *grid);
+                lastMoveTimes[CONTROLS_X] = currentTime;
+            } });
 
-    eventManager.registerKeyAction(SDL_SCANCODE_D, [this]()
-                                   {
-                                       Uint32 currentTime = SDL_GetTicks();
-                                       if (currentTime - lastMoveTime > moveInterval) {
-                                           currentPiece->move(gridSquareSize, 0, *grid);
-                                           lastMoveTime = currentTime;
-                                       }
-                                   });
+        eventManager.registerKeyAction(SDL_SCANCODE_S, KEY_EVENT_TYPE::KEYHELD, [this]()
+                                       {
+            Uint32 currentTime = SDL_GetTicks();
+            if (currentTime - lastMoveTimes[CONTROLS_Y] > movementCooldown) {
+                currentPiece->move(0, gridSquareSize, *grid);
+                lastMoveTimes[CONTROLS_Y] = currentTime;
+            } });
 
-    eventManager.registerQuitAction([this]()
-                                    { quit = true; });
-}
+        eventManager.registerQuitAction([this]()
+                                        { quit = true; });
+    }
 
-// TODO any way to further abstract away the need to start/end a render frame once here at the game level?
-void Tetris::render() const
-{
-    graphics.startFrame(core::G_COLOR_BLACK, 255);
-    grid->draw(&graphics);
-    currentPiece->draw(&graphics);
-    graphics.render();
-}
+    // TODO any way to further abstract away the need to start/end a render frame once here at the game level?
+    void Tetris::render() const
+    {
+        graphics.startFrame(core::G_COLOR_BLACK, 255);
+        grid->draw(&graphics);
+        currentPiece->draw(&graphics);
+        graphics.render();
+    }
 
-void Tetris::update()
-{
-    //TODO refactor this time management into a core geng class
-    Uint32 currentTime = graphics.getTicks();
-    deltaTime = (currentTime - lastTime) / 1000.0f; // Convert to seconds
-    lastTime = currentTime;
-
-    eventManager.handleEvents();
+    void Tetris::update()
+    {
+        eventManager.handleEvents();
+    }
 }
