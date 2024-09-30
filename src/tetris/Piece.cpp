@@ -106,4 +106,18 @@ namespace tetris
         _rotationIndex = newRotationIndex;
     }
 
+    bool Piece::isAtBottom(const Grid &grid)
+    {
+        int gridBottom = grid.getGridY() + grid.getGridHeight();
+        for (const auto &part : _body)
+        {
+            if (part.rect.y == gridBottom - 61) //TODO 61 magic number only valid for 2560 X 1440 resolution
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }

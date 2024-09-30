@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <random>
 #include <memory>
+#include <vector>
 
 #include "GraphicsManager.h"
 #include "Coordinate.h"
@@ -45,10 +46,12 @@ namespace tetris
         int _gridY = (_screenHeight - _gridHeight) / 2; // Center vertically
 
         std::unique_ptr<Piece> _currentPiece;
+        std::vector<std::unique_ptr<Piece>> _placedPieces;
         std::unique_ptr<Grid> _grid;
 
         void setupEventHandlers();
         void update();
         void render() const;
+        void spawnNewPiece();
     };
 }

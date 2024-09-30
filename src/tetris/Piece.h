@@ -21,6 +21,7 @@ namespace tetris
         void draw(const core::GraphicsManager *graphics) const override;
         void move(int dx, int dy, const Grid &grid);
         void rotate(const Grid &grid);
+        bool isAtBottom(const Grid &grid);
 
     private:
         std::vector<core::GRectangle> _body;

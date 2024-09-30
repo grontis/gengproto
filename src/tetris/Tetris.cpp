@@ -70,6 +70,15 @@ namespace tetris
     {
         _graphics.startFrame(core::G_COLOR_BLACK, 255);
         _grid->draw(&_graphics);
+
+        for (const auto &piece : _placedPieces)
+        {
+            if (piece)
+            {
+                piece->draw(&_graphics);
+            }
+        }
+
         _currentPiece->draw(&_graphics);
         _graphics.render();
     }
@@ -77,5 +86,18 @@ namespace tetris
     void Tetris::update()
     {
         _eventManager.handleEvents();
+
+        if (_currentPiece->isAtBottom(*_grid))
+        {
+            _placedPieces.push_back(std::move(_currentPiece));
+            spawnNewPiece();
+        }
+    }
+
+    void Tetris::spawnNewPiece()
+    {
+        _currentPiece = std::make_unique<Piece>();
+        const auto &pieceTemplate = pieceTemplates[getRandomPieceTemplate()];
+        _currentPiece->initializeFromTemplate(pieceTemplate, 0, _gridX + (_gridSquareSize * 3), _gridY, _gridSquareSize);
     }
 }
