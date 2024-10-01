@@ -4,8 +4,8 @@
 
 #include "GRectangle.h"
 #include "Drawable.h"
-#include "Grid.h"
 #include "PieceTemplates.h"
+#include "Grid.h"
 
 namespace tetris
 {

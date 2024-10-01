@@ -71,7 +71,7 @@ namespace tetris
         _graphics.startFrame(core::G_COLOR_BLACK, 255);
         _grid->draw(&_graphics);
 
-        for (const auto &piece : _placedPieces)
+        for (const auto &piece : _grid->getPlacedPieces())
         {
             if (piece)
             {
@@ -89,7 +89,7 @@ namespace tetris
 
         if (_currentPiece->isAtBottom(*_grid))
         {
-            _placedPieces.push_back(std::move(_currentPiece));
+            _grid->placePiece(std::move(_currentPiece));
             spawnNewPiece();
         }
     }

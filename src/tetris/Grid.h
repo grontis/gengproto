@@ -1,5 +1,8 @@
 #pragma once
+
 #include <unordered_map>
+#include <vector>
+#include <memory>
 
 #include <SDL2/SDL.h>
 
@@ -8,6 +11,8 @@
 
 namespace tetris
 {
+    class Piece;
+
     class Grid
         : core::Drawable
     {
@@ -21,12 +26,16 @@ namespace tetris
 
         void draw(const core::GraphicsManager *graphics) const override;
 
+        const std::vector<std::unique_ptr<Piece>> &getPlacedPieces() const;
+        void placePiece(std::unique_ptr<Piece> piece);
+
     private:
         int _padding;
         int _gridSquareSize;
         int _gridX, _gridY;
         int _gridWidth, _gridHeight;
         int _screenWidth, _screenHeight;
+        std::vector<std::unique_ptr<Piece>> _placedPieces;
 
         void drawVerticalLines(const core::GraphicsManager *graphics) const;
         void drawHorizontalLines(const core::GraphicsManager *graphics) const;

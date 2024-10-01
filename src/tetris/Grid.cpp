@@ -1,4 +1,5 @@
 #include "Grid.h"
+#include "Piece.h"
 
 namespace tetris
 {
@@ -45,5 +46,15 @@ namespace tetris
             int y = _gridY + i * _gridSquareSize;
             graphics->drawLine(_gridX, y, _gridX + _gridWidth, y);
         }
+    }
+
+    const std::vector<std::unique_ptr<Piece>> &Grid::getPlacedPieces() const
+    {
+        return _placedPieces;
+    }
+
+    void Grid::placePiece(std::unique_ptr<Piece> piece)
+    {
+        _placedPieces.push_back(std::move(piece));
     }
 }
