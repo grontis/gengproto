@@ -22,7 +22,7 @@ namespace tetris
         {
             int x = startX + coord.x * gridSquareSize;
             int y = startY + coord.y * gridSquareSize;
-            _body.push_back(core::GRectangle(x, y, gridSquareSize, gridSquareSize, core::G_COLOR_ORANGE, 100));
+            _body.push_back(core::GRectangle(x, y, gridSquareSize, gridSquareSize, _pieceTemplate.color, 100));
         }
     }
 

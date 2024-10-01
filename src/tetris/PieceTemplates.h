@@ -5,12 +5,14 @@
 
 #include "Coordinate.h"
 #include "RandomGenerator.h"
+#include "Colors.h"
 
 namespace tetris
 {
     struct PieceTemplate
     {
         std::vector<std::vector<Coordinate>> rotations;
+        core::G_COLOR color;
     };
 
     typedef enum
