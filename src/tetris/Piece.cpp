@@ -7,6 +7,11 @@ namespace tetris
     {
     }
 
+    const std::vector<core::GRectangle> &Piece::getBody() const
+    {
+        return _body;
+    }
+
     void Piece::initializeFromTemplate(const PieceTemplate &pieceTemplate, int rotationIndex, int startX, int startY, int gridSquareSize)
     {
         _pieceTemplate = pieceTemplate;
@@ -111,9 +116,26 @@ namespace tetris
         int gridBottom = grid.getGridY() + grid.getGridHeight();
         for (const auto &part : _body)
         {
-            if (part.rect.y == gridBottom - 61) //TODO 61 magic number only valid for 2560 X 1440 resolution
+            if (part.rect.y == gridBottom - 61) // TODO 61 magic number only valid for 2560 X 1440 resolution
             {
                 return true;
+            }
+        }
+
+        const auto &placedPieces = grid.getPlacedPieces();
+        for (const auto &placedPiece : placedPieces)
+        {
+            for (const auto &part : _body)
+            {
+                int newY = part.rect.y + _gridSquareSize;
+
+                for (const auto &placedPart : placedPiece->getBody())
+                {
+                    if (part.rect.x == placedPart.rect.x && newY == placedPart.rect.y)
+                    {
+                        return true;
+                    }
+                }
             }
         }
 
