@@ -16,7 +16,7 @@ namespace tetris
         Piece() = default;
         Piece(std::vector<core::GRectangle> &rects);
 
-        const std::vector<core::GRectangle> &getBody() const;
+        std::vector<core::GRectangle> &getBody();
 
         void initializeFromTemplate(const PieceTemplate &pieceTemplate, int rotationIndex, int startX, int startY, int gridSquareSize);
         void addRectangle(const core::GRectangle &rect);

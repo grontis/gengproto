@@ -36,6 +36,9 @@ namespace tetris
         Uint32 _rotationCooldown = 150;
         std::unordered_map<tetris::CONTROLS, Uint32> _lastMoveTimes;
 
+        Uint32 _autoMovementCooldown = 400;
+        Uint32 _lastAutoMovementTime;
+
         int _padding = 40;
         int _screenWidth = 2560;
         int _screenHeight = 1440;
@@ -52,5 +55,6 @@ namespace tetris
         void update();
         void render() const;
         void spawnNewPiece();
+        void handleAutoMovement();
     };
 }

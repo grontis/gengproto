@@ -7,7 +7,7 @@ namespace tetris
     {
     }
 
-    const std::vector<core::GRectangle> &Piece::getBody() const
+    std::vector<core::GRectangle> &Piece::getBody()
     {
         return _body;
     }
@@ -122,6 +122,7 @@ namespace tetris
             }
         }
 
+        //TODO need to refactor calculation of pieces on top of placed pieces
         const auto &placedPieces = grid.getPlacedPieces();
         for (const auto &placedPiece : placedPieces)
         {

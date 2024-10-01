@@ -90,8 +90,11 @@ namespace tetris
         if (_currentPiece->isAtBottom(*_grid))
         {
             _grid->placePiece(std::move(_currentPiece));
+            _grid->handleRowCompletion();
             spawnNewPiece();
         }
+
+        handleAutoMovement();
     }
 
     void Tetris::spawnNewPiece()
@@ -99,5 +102,15 @@ namespace tetris
         _currentPiece = std::make_unique<Piece>();
         const auto &pieceTemplate = pieceTemplates[getRandomPieceTemplate()];
         _currentPiece->initializeFromTemplate(pieceTemplate, 0, _gridX + (_gridSquareSize * 3), _gridY, _gridSquareSize);
+    }
+
+    void Tetris::handleAutoMovement()
+    {
+        Uint32 currentTime = SDL_GetTicks();
+        if (currentTime - _lastAutoMovementTime > _autoMovementCooldown)
+        {
+            _currentPiece->move(0, _gridSquareSize, *_grid);
+            _lastAutoMovementTime = currentTime;
+        };
     }
 }

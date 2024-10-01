@@ -25,9 +25,9 @@ namespace tetris
         int getGridHeight() const;
 
         void draw(const core::GraphicsManager *graphics) const override;
-
         const std::vector<std::unique_ptr<Piece>> &getPlacedPieces() const;
         void placePiece(std::unique_ptr<Piece> piece);
+        void handleRowCompletion();
 
     private:
         int _padding;
@@ -39,5 +39,7 @@ namespace tetris
 
         void drawVerticalLines(const core::GraphicsManager *graphics) const;
         void drawHorizontalLines(const core::GraphicsManager *graphics) const;
+        void removeRow(int row);
+        void shiftRowsDown(int row);
     };
 }

@@ -57,4 +57,74 @@ namespace tetris
     {
         _placedPieces.push_back(std::move(piece));
     }
+
+    void Grid::handleRowCompletion()
+    {
+        std::unordered_map<int, int> rowCounts;
+        for (const auto &piece : _placedPieces)
+        {
+            for (const auto &square : piece->getBody())
+            {
+                int row = (square.rect.y - _gridY) / _gridSquareSize;
+                rowCounts[row]++;
+            }
+        }
+
+        std::vector<int> fullRows;
+        for (const auto &entry : rowCounts)
+        {
+            if (entry.second == 10)
+            {
+                fullRows.push_back(entry.first);
+            }
+        }
+
+        if (fullRows.empty())
+        {
+            return;
+        }
+
+        std::sort(fullRows.begin(), fullRows.end(), std::greater<int>());
+
+        for (int row : fullRows)
+        {
+            removeRow(row);
+        }
+
+        for (int row : fullRows)
+        {
+            shiftRowsDown(row);
+        }
+    }
+
+    void Grid::removeRow(int row)
+    {
+        for (auto &piece : _placedPieces)
+        {
+            auto &body = piece->getBody();
+            body.erase(
+                std::remove_if(body.begin(), body.end(),
+                               [this, row](const core::GRectangle &square)
+                               {
+                                   int squareRow = (square.rect.y - _gridY) / _gridSquareSize;
+                                   return squareRow == row;
+                               }),
+                body.end());
+        }
+    }
+
+    void Grid::shiftRowsDown(int row)
+    {
+        for (auto &piece : _placedPieces)
+        {
+            for (auto &square : piece->getBody())
+            {
+                int squareRow = (square.rect.y - _gridY) / _gridSquareSize;
+                if (squareRow < row)
+                {
+                    square.rect.y += _gridSquareSize;
+                }
+            }
+        }
+    }
 }
